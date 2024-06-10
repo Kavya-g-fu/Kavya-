@@ -1,0 +1,43 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<ctype.h>
+void count_file(const char *filename,int *lines,int *words,int *characters)
+{
+    FILE *file=fopen(filename,"r");
+    if(file==NULL)
+{
+    perror("fopen");
+    exit(EXIT_FAILURE);
+}
+char ch;
+int in_word=0;
+while((ch=fgetc(file))!=EOF)
+{
+    (*characters)++;
+    if(ch=='\n')
+    {
+	(*lines)++;
+    }
+    if(isspace(ch))
+    {
+	in_word=1;
+	(*words)++;
+    }
+}
+fclose(file);
+}
+int main(int argc,char *argv[])
+{
+    if(argc<2)
+    {
+	fprintf(stderr,"usage %s<file>...\n",argv[0]);
+	exit(EXIT_FAILURE);
+    }
+    for(int i=1;i<argc;i++)
+    {
+	int lines=0,words=0,characters=0;
+	count_file(argv[i],&lines,&words,&characters);
+	printf("%d %d %d %s\n",lines,words,characters,argv[i]);
+    }
+    return 0;
+}
